@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\LdapTools\LdapTools.csproj" />
+    <ProjectReference Include="..\LdapTools\LdapTools.csproj" />
   </ItemGroup>
 
 </Project>
