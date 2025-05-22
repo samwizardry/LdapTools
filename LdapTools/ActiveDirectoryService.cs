@@ -1,5 +1,4 @@
 using System.DirectoryServices.Protocols;
-using System.Linq;
 using System.Text;
 
 using LdapTools.Exceptions;
