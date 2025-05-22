@@ -17,7 +17,7 @@ using var service = new ActiveDirectoryService(connectionFactory, new ActiveDire
     QueryBase = "DC=lorien,DC=local"
 });
 
-//var user = service.GetUserByUsn("Administrator@lorien.local", "CN=Users");
+//var user = service.GetUserByUpn("Administrator@lorien.local", "CN=Users");
 //var css = service.GetUserBySam("cal_sync_svc", "CN=Users");
 
 //if (user is not null)

@@ -119,7 +119,7 @@ public class ActiveDirectoryService : IDisposable
         return GetUser<TUser>(BuildDistinguishedName(queryBase), filter);
     }
 
-    public TUser? GetUserByUsn<TUser>(string userPrincipalName, string? queryBase = null)
+    public TUser? GetUserByUpn<TUser>(string userPrincipalName, string? queryBase = null)
         where TUser : class, IUser<TUser>, new()
     {
         ArgumentNullException.ThrowIfNullOrWhiteSpace(userPrincipalName);
