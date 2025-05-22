@@ -1,6 +1,8 @@
+using System.DirectoryServices.Protocols;
+
 namespace LdapTools;
 
-public class ActiveDirectoryUser
+public class User : IUser<User>
 {
     /// <summary>
     /// objectGUID.
@@ -121,6 +123,17 @@ public class ActiveDirectoryUser
 
     public bool IsLockedOut() =>
         (UserAccountControl & UserAccountControlFlag.LOCKOUT) == UserAccountControlFlag.LOCKOUT;
+
+    public static User ParseUser(SearchResultEntry entry)
+    {
+        return entry.ParseUser();
+    }
+
+    public static bool TryParseUser(SearchResultEntry entry, out User? user)
+    {
+        user = entry.ParseUser();
+        return true;
+    }
 
     /// <summary>
     /// Запрашиваемые поля

@@ -4,20 +4,28 @@ using LdapTools;
 
 namespace Sandbox;
 
-public class MyUser : IActiveDirectoryUser<MyUser>
+public class MyUser : IUser<MyUser>
 {
     public string Email { get; init; } = null!;
 
-    public static MyUser? ParseUser(SearchResultEntry entry)
+    public static MyUser ParseUser(SearchResultEntry entry)
     {
-        var email = entry.GetAttributeValue<string>("mail");
-
-        if (email is null)
-            return null;
-
         return new MyUser
         {
-            Email = email
+            Email = entry.GetAttributeValue<string>("mail")!
         };
+    }
+
+    public static bool TryParseUser(SearchResultEntry entry, out MyUser? user)
+    {
+        user = ParseUser(entry);
+
+        if (string.IsNullOrWhiteSpace(user.Email))
+        {
+            user = null;
+            return false;
+        }
+
+        return true;
     }
 }

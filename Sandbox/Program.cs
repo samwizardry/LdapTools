@@ -42,8 +42,8 @@ using var service = new ActiveDirectoryService(connectionFactory, new ActiveDire
 //service.ChangePassword(user!.DistinguishedName, "pacan", "mazab");
 
 
-var users = service.GetUsers<MyUser>(["mail"], "(memberOf=CN=Tech,CN=Users,DC=lorien,DC=local)", "CN=Users");
+var users = service.GetUsers<User>(User.Attributes.ToArray(), "(memberOf=CN=Tech,CN=Users,DC=lorien,DC=local)", "CN=Users");
 foreach (var user in users)
 {
-    Console.WriteLine(user.Email);
+    Console.WriteLine(user.Mail);
 }

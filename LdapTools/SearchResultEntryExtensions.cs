@@ -4,7 +4,7 @@ using System.Text;
 
 namespace LdapTools;
 
-public static class ActiveDirectoryExtensions
+public static class SearchResultEntryExtensions
 {
     public static T? GetAttributeValue<T>(this SearchResultEntry entry, string attributeName)
     {
@@ -22,9 +22,9 @@ public static class ActiveDirectoryExtensions
         return value;
     }
 
-    public static ActiveDirectoryUser ParseActiveDirectoryUser(this SearchResultEntry entry)
+    public static User ParseUser(this SearchResultEntry entry)
     {
-        var user = new ActiveDirectoryUser
+        var user = new User
         {
             ObjectGuid = new Guid(entry.GetAttributeValue<byte[]>("objectGUID")!),
             SAMAccountName = entry.GetAttributeValue<string>("sAMAccountName")!,

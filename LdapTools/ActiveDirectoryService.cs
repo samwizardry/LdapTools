@@ -77,13 +77,14 @@ public class ActiveDirectoryService : IDisposable
         return (ModifyResponse)_connection.SendRequest(new ModifyRequest(distinguishedName, modifications));
     }
 
-    public ActiveDirectoryUser? GetUser(string distinguishedName, string filter)
+    public TUser? GetUser<TUser>(string distinguishedName, string filter)
+        where TUser : class, IUser<TUser>, new()
     {
         SearchResponse response = SendSearchRequest(
             distinguishedName,
             filter,
             SearchScope.Subtree,
-            ActiveDirectoryUser.Attributes.ToArray());
+            User.Attributes.ToArray());
 
         if (response.ResultCode != ResultCode.Success)
         {
@@ -100,10 +101,13 @@ public class ActiveDirectoryService : IDisposable
             throw new InvalidOperationException("The input sequence contains more than one element.");
         }
 
-        return response.Entries[0].ParseActiveDirectoryUser();
+        return TUser.TryParseUser(response.Entries[0], out var user)
+            ? user
+            : null;
     }
 
-    public ActiveDirectoryUser? GetUserBySam(string sAMAccountName, string? queryBase = null)
+    public TUser? GetUserBySam<TUser>(string sAMAccountName, string? queryBase = null)
+        where TUser : class, IUser<TUser>, new()
     {
         ArgumentNullException.ThrowIfNullOrWhiteSpace(sAMAccountName);
 
@@ -114,10 +118,11 @@ public class ActiveDirectoryService : IDisposable
             .Append(")")
             .ToString();
 
-        return GetUser(BuildDistinguishedName(queryBase), filter);
+        return GetUser<TUser>(BuildDistinguishedName(queryBase), filter);
     }
 
-    public ActiveDirectoryUser? GetUserByUsn(string userPrincipalName, string? queryBase = null)
+    public TUser? GetUserByUsn<TUser>(string userPrincipalName, string? queryBase = null)
+        where TUser : class, IUser<TUser>, new()
     {
         ArgumentNullException.ThrowIfNullOrWhiteSpace(userPrincipalName);
 
@@ -128,10 +133,11 @@ public class ActiveDirectoryService : IDisposable
             .Append(")")
             .ToString();
 
-        return GetUser(BuildDistinguishedName(queryBase), filter);
+        return GetUser<TUser>(BuildDistinguishedName(queryBase), filter);
     }
 
-    public ActiveDirectoryUser? GetUserByGuid(string objectGuid)
+    public TUser? GetUserByGuid<TUser>(string objectGuid)
+        where TUser : class, IUser<TUser>, new()
     {
         ArgumentNullException.ThrowIfNullOrWhiteSpace(objectGuid);
 
@@ -143,36 +149,11 @@ public class ActiveDirectoryService : IDisposable
             .Append(")")
             .ToString();
 
-        return GetUser(distinguishedName, filter);
-    }
-
-    public IEnumerable<ActiveDirectoryUser> GetUsers(string? queryBase = null)
-    {
-        string filter = new StringBuilder("(&")
-            .Append("(objectCategory=person)")
-            .Append("(objectClass=user)")
-            .Append(")")
-            .ToString();
-
-        SearchResponse response = SendSearchRequest(
-            BuildDistinguishedName(queryBase),
-            filter,
-            SearchScope.Subtree,
-            ActiveDirectoryUser.Attributes.ToArray());
-
-        if (response.ResultCode != ResultCode.Success)
-        {
-            throw new SearchRequestException(response.ResultCode, response.ErrorMessage, response);
-        }
-
-        foreach (SearchResultEntry entry in response.Entries)
-        {
-            yield return entry.ParseActiveDirectoryUser();
-        }
+        return GetUser<TUser>(distinguishedName, filter);
     }
 
     public IEnumerable<TUser> GetUsers<TUser>(string[] attributes, string? filter = null, string? queryBase = null)
-        where TUser : class, IActiveDirectoryUser<TUser>, new()
+        where TUser : class, IUser<TUser>, new()
     {
         var filterBuilder = new StringBuilder("(&")
             .Append("(objectCategory=person)")
@@ -197,10 +178,8 @@ public class ActiveDirectoryService : IDisposable
 
         foreach (SearchResultEntry entry in response.Entries)
         {
-            if (TUser.ParseUser(entry) is TUser user)
-            {
-                yield return user;
-            }
+            if (TUser.TryParseUser(entry, out var user))
+                yield return user!;
         }
     }
 
