@@ -5,5 +5,5 @@ public class ActiveDirectoryOptions
     /// <summary>
     /// e.g. "DC=contoso,DC=com"
     /// </summary>
-    public required string QueryBase { get; init; }
+    public string QueryBase { get; init; } = null!;
 }

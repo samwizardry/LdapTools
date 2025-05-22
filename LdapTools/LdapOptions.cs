@@ -5,7 +5,7 @@ public class LdapOptions
     /// <summary>
     /// Server address (e.g. 127.0.0.1).
     /// </summary>
-    public required string Host { get; init; }
+    public string Host { get; init; } = null!;
 
     /// <summary>
     /// Server port (default: 389).
@@ -15,12 +15,12 @@ public class LdapOptions
     /// <summary>
     /// Server zone (e.g. com).
     /// </summary>
-    public required string Zone { get; init; }
+    public string Zone { get; init; } = null!;
 
     /// <summary>
     /// Server domain (e.g. contoso).
     /// </summary>
-    public required string Domain { get; init; }
+    public string Domain { get; init; } = null!;
 
     /// <summary>
     /// Server subdomain (e.g. fabrikam).
@@ -30,7 +30,7 @@ public class LdapOptions
     /// <summary>
     /// (e.g. fabrikam.contoso.com).
     /// </summary>
-    public required string Server { get; init; }
+    public string Server { get; init; } = null!;
 
     /// <summary>
     /// This is for connecting via LDAPS (636 port).
@@ -45,10 +45,10 @@ public class LdapOptions
     /// <summary>
     /// Service account username.
     /// </summary>
-    public required string UserName { get; init; }
+    public string UserName { get; init; } = null!;
 
     /// <summary>
     /// Service account password.
     /// </summary>
-    public required string Password { get; init; }
+    public string Password { get; init; } = null!;
 }
