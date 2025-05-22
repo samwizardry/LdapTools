@@ -124,16 +124,8 @@ public class User : IUser<User>
     public bool IsLockedOut() =>
         (UserAccountControl & UserAccountControlFlag.LOCKOUT) == UserAccountControlFlag.LOCKOUT;
 
-    public static User ParseUser(SearchResultEntry entry)
-    {
-        return entry.ParseUser();
-    }
-
-    public static bool TryParseUser(SearchResultEntry entry, out User? user)
-    {
-        user = entry.ParseUser();
-        return true;
-    }
+    public static User? ParseUser(SearchResultEntry entry) =>
+        entry.ParseUser();
 
     /// <summary>
     /// Запрашиваемые поля

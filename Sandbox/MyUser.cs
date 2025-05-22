@@ -8,24 +8,20 @@ public class MyUser : IUser<MyUser>
 {
     public string Email { get; init; } = null!;
 
-    public static MyUser ParseUser(SearchResultEntry entry)
+    public static MyUser? ParseUser(SearchResultEntry entry)
     {
-        return new MyUser
-        {
-            Email = entry.GetAttributeValue<string>("mail")!
-        };
-    }
+        var email = entry.GetAttributeValue<string>("mail");
 
-    public static bool TryParseUser(SearchResultEntry entry, out MyUser? user)
-    {
-        user = ParseUser(entry);
-
-        if (string.IsNullOrWhiteSpace(user.Email))
+        if (string.IsNullOrWhiteSpace(email))
         {
-            user = null;
-            return false;
+            return null;
         }
-
-        return true;
+        else
+        {
+            return new MyUser
+            {
+                Email = email
+            };
+        }
     }
 }

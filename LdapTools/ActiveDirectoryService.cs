@@ -101,9 +101,7 @@ public class ActiveDirectoryService : IDisposable
             throw new InvalidOperationException("The input sequence contains more than one element.");
         }
 
-        return TUser.TryParseUser(response.Entries[0], out var user)
-            ? user
-            : null;
+        return TUser.ParseUser(response.Entries[0]);
     }
 
     public TUser? GetUserBySam<TUser>(string sAMAccountName, string? queryBase = null)
@@ -178,8 +176,10 @@ public class ActiveDirectoryService : IDisposable
 
         foreach (SearchResultEntry entry in response.Entries)
         {
-            if (TUser.TryParseUser(entry, out var user))
-                yield return user!;
+            if (TUser.ParseUser(entry) is TUser user)
+            {
+                yield return user;
+            }
         }
     }
 
